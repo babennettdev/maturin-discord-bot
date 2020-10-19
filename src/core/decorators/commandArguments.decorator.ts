@@ -1,6 +1,6 @@
 import { CustomDecorator, SetMetadata } from '@nestjs/common';
 
-export const CommandArguments = (commandArugments: string[]): CustomDecorator<string> => {
-  return SetMetadata('commandArguments', commandArugments);
+export const CommandArguments = (commandArguments: string[]): CustomDecorator<string> => {
+  return SetMetadata('commandArguments', commandArguments);
 
 }
