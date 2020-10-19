@@ -3,7 +3,7 @@ import { Reflector } from '@nestjs/core';
 interface CommandInterface {
   commandPrefix: string;
   command: string;
-  commandArguments?: string[];
+  commandArguments?: boolean;
 };
 export class CommandReflectorService {
   constructor(private reflector: Reflector) {
@@ -12,7 +12,7 @@ export class CommandReflectorService {
   getCommand(commandFunction: Function): CommandInterface {
     const commandPrefix = this.reflector.get<string>('commandPrefix', commandFunction);
     const command = this.reflector.get<string>('command', commandFunction);
-    const commandArugments = this.reflector.get<string[]>('commandArugments', commandFunction) ? this.reflector.get<string[]>('commandArugments', commandFunction) : null;
+    const commandArugments = this.reflector.get<boolean>('commandArguments', commandFunction) ? this.reflector.get<boolean>('commandArguments', commandFunction) : false;
 
     return {
       commandPrefix: commandPrefix,
