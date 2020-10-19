@@ -1,10 +1,9 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Message } from 'discord.js';
 
 @Injectable()
 export class GunslingerLitanyService {
   constructor() { }
-
 
   async gunslingerLitany(message: Message): Promise<void> {
     message.reply(`\`\`\`
