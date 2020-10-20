@@ -11,13 +11,16 @@ export class ListenerService {
     this.botClient = discordClientService.getClient();
   }
 
-  async listen(opts: { commandPrefix: string, command: string, commandServiceFunction: Function, commandOptions?: string[], commandArguments?: boolean }): Promise<void> {
+  async listen(opts: { commandPrefix: string, command: string, commandServiceFunction: Function, commandOptions?: string[], commandArguments?: boolean, nsfw?: boolean }): Promise<void> {
 
     await this.botClient.on("message", function (message) {
       if (message.author.bot) {
         return;
       }
       if (!message.content.startsWith(opts.commandPrefix)) {
+        return;
+      }
+      if (opts.nsfw != undefined && opts.nsfw === false) {
         return;
       }
 
