@@ -43,7 +43,6 @@ export class RedditService {
       await redditRandom(message, snoowrap, subredditName);
     }
     if (commandOptions.search) {
-      console.log('search')
       await redditSearch(message, snoowrap, subredditName, commandOptions.search, Number(commandOptions.limit), commandOptions.time as Timespan);
     }
 

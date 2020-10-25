@@ -33,11 +33,8 @@ export class ListenerService {
       }
 
       const commandBody = commandString.slice(opts.command.length + 1); // Slice away the command and the trailing space character
-      console.log(commandBody)
       const commandBodyRegex = new RegExp(`(?<=")\\s|(?<=!\\w+)\\s|(?<=--\\w+)\\s`, 'g'); // Parsing all spaces between --commandOption --commandOption2="command option string" command argument
-      console.log(commandBodyRegex)
       const splitCommandBody = commandBody.split(commandBodyRegex);
-      console.log(splitCommandBody)
       const options: Object = {};
 
       if (opts.commandOptions) {
