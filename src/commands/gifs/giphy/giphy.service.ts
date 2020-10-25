@@ -11,11 +11,8 @@ export class GiphyService {
 
   }
 
-  async giphy(message: Message, gifSearchString: string[]): Promise<void> {
-    let searchString = '';
-    await gifSearchString.forEach((word) => {
-      searchString = searchString.concat(`${word} `);
-    });
+  async giphy(message: Message, gifSearchString: string): Promise<void> {
+    let searchString = gifSearchString;
     this.giphyToken = await String(process.env.GIPHY_TOKEN);
     const giphyFetch = await new GiphyFetch(this.giphyToken);
     await giphyFetch.search(searchString)
