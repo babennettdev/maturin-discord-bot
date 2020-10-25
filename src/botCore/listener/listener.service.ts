@@ -12,7 +12,7 @@ export class ListenerService {
   }
 
   async listen(opts: { commandPrefix: string, command: string, commandServiceFunction: Function, commandOptions?: string[], commandArguments?: boolean, nsfw?: boolean }): Promise<void> {
-
+    const self = this;
     await this.botClient.on("message", function (message) {
       if (message.author.bot) {
         return;
@@ -24,46 +24,77 @@ export class ListenerService {
         return;
       }
 
-      const commandBody = message.content.slice(opts.commandPrefix.length);
-      const splitCommandBody = commandBody.split(' ');
-      const commandName = splitCommandBody.shift().toLowerCase();
-      let options: string[] = [];
+      const commandString = message.content.slice(opts.commandPrefix.length);
+      const getCommandName = commandString.split(' '); // Split string to pull the command name
+      const commandName = getCommandName.shift();
+
+      if (commandName !== opts.command) {
+        return;
+      }
+
+      const commandBody = commandString.slice(opts.command.length + 1); // Slice away the command and the trailing space character
+      const commandBodyRegex = new RegExp(`(?<=")\\s|(?<=!\\w+)\\s|(?<=--\\w+)\\s`, 'g'); // Parsing all spaces between --commandOption --commandOption2="command option string" command argument
+      const splitCommandBody = commandBody.split(commandBodyRegex);
+      const options: Object = {};
+
       if (opts.commandOptions) {
 
-      }
-      if (options.length === 0) {
-        options = undefined;
-      }
-      let args: string[] = [];
-      if (opts.commandArguments) {
-        while (splitCommandBody.length != 0) {
-          args.push(splitCommandBody.shift().toLowerCase());
-        }
-      }
-      if (args.length === 0) {
-        args = undefined;
+        splitCommandBody.forEach((potentialCommandOptionArg) => {
+          const parsed: { commandOption: string, commandOptionArg: string | boolean } = self.parseCommandOptions(opts.commandOptions, potentialCommandOptionArg);
+          if (!!parsed.commandOption) {
+            options[parsed.commandOption] = parsed.commandOptionArg;
+          }
+        });
       }
 
-      if (commandName === opts.command.toLowerCase()) {
-        if (options) {
-          if (args) {
-          }
-          else {
-          }
+      let args: string = undefined;
+      if (opts.commandArguments) {
+        args = splitCommandBody[(splitCommandBody.length - 1)];
+      }
+
+      if (Object.keys(options).length !== 0) {
+        if (args) {
+          opts.commandServiceFunction(message, options, args)
         }
         else {
-          if (args) {
-            opts.commandServiceFunction(message, args)
-          }
-          else {
-            opts.commandServiceFunction(message)
-          }
+          opts.commandServiceFunction(message, options)
         }
-
+      }
+      else {
+        if (args) {
+          opts.commandServiceFunction(message, args)
+        }
+        else {
+          opts.commandServiceFunction(message)
+        }
       }
 
     });
   }
 
+  private parseCommandOptions(possibleCommandOptions: string[], commandOptionsString: string): { commandOption: string, commandOptionArg: (string | boolean) } {
+    let commandOption: string = undefined;
+    possibleCommandOptions.forEach((possibleCommandOption) => {
+
+      if (commandOptionsString.startsWith(possibleCommandOption)) {
+        commandOption = possibleCommandOption.replace("--", "");
+      }
+    });
+    let commandOptionArg: string | boolean = undefined;
+    if (!!commandOption) {
+      const potentialCommandOptionArg = commandOptionsString.slice(commandOption.length + 2) // + 2 to account for "--"
+
+      if (potentialCommandOptionArg.length > 0 && potentialCommandOptionArg.startsWith('=')) {
+        commandOptionArg = potentialCommandOptionArg.slice(1);
+        commandOptionArg = commandOptionArg.replace(/"/g, "");
+
+      }
+      else {
+        commandOptionArg = true;
+      }
+    }
+
+    return { commandOption, commandOptionArg };
+  }
 
 }
