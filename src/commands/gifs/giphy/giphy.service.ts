@@ -12,7 +12,7 @@ export class GiphyService {
   }
 
   async giphy(message: Message, gifSearchString: string[]): Promise<void> {
-    let searchString: string = '';
+    let searchString = '';
     await gifSearchString.forEach((word) => {
       searchString = searchString.concat(`${word} `);
     });

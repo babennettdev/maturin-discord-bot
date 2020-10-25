@@ -1,5 +1,4 @@
 import { Reflector } from '@nestjs/core';
-import { CommandOptions } from '../decorators/commandOptions.decorator';
 
 interface CommandInterface {
   commandPrefix: string;
