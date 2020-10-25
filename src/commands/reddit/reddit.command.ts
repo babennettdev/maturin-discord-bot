@@ -22,7 +22,7 @@ export class RedditCommand {
   @CommandPrefix(COMMAND_PREFIX)
   @Command('reddit')
   @CommandArguments(true)
-  @CommandOptions(['--popular', '--new', '--search'])
+  @CommandOptions(['--popular', '--new', '--search', '--limit', '--time', '--random'])
   @NSFW(NSFW_ENABLED)
   reddit() {
     const { commandPrefix, command, commandArguments, commandOptions, nsfw } = this.commandReflector.getCommand(this.reddit);
